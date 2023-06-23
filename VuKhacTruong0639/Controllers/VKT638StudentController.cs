@@ -6,12 +6,15 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using VuKhacTruong0639.Models;
+using VuKhacTruong0639.Models.Process;
 
 namespace VuKhacTruong0639.Controllers
 {
     public class VKT638StudentController : Controller
     {
         private readonly ApplicationDbContext _context;
+
+        VKT638Process strPro =  new VKT638Process();
 
         public VKT638StudentController(ApplicationDbContext context)
         {
@@ -45,10 +48,29 @@ namespace VuKhacTruong0639.Controllers
         }
 
         // GET: VKT638Student/Create
-        public IActionResult Create()
-        {
+       public IActionResult Create()
+        { 
+            var newID = "";
+            if(_context.VKT638Student.Count() == 0){
+                // khởi tạo 1 mã mới
+                newID = "T01";
+               
+            }
+            else{
+                // lấy ra được ID mới nhất 
+                // OrderByDescending :  lấy giá trị giảm dần trong chuỗi
+                var ncc = _context.VKT638Student.OrderByDescending(x=>x.StudentID).First().StudentID;
+                // sinh mã tự động dựa trên ID mới nhất
+
+                newID = strPro.AutoGenerateKey(ncc.ToString());
+
+            }
+            ViewBag.StudentID = newID;
+           
+            // end
             return View();
         }
+
 
         // POST: VKT638Student/Create
         // To protect from overposting attacks, enable the specific properties you want to bind to.
